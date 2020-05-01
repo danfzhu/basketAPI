@@ -16,17 +16,17 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE IF EXISTS postgres;
+DROP DATABASE IF EXISTS testing;
 --
--- Name: postgres; Type: DATABASE; Schema: -; Owner: chris
+-- Name: testing; Type: DATABASE; Schema: -; Owner: chris
 --
 
-CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'C' LC_CTYPE = 'C';
+CREATE DATABASE testing WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'C' LC_CTYPE = 'C';
 
 
-ALTER DATABASE postgres OWNER TO chris;
+ALTER DATABASE testing OWNER TO chris;
 
-\connect postgres
+\connect testing
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -39,11 +39,1117 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
 --
--- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: chris
+-- Name: customer; Type: TABLE; Schema: public; Owner: chris
 --
 
-COMMENT ON DATABASE postgres IS 'default administrative connection database';
+CREATE TABLE public.customer (
+    id bigint NOT NULL,
+    customer_code character varying NOT NULL,
+    file_id integer NOT NULL
+);
+
+
+ALTER TABLE public.customer OWNER TO chris;
+
+--
+-- Name: customer_detail; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.customer_detail (
+    id bigint NOT NULL,
+    customer_id integer NOT NULL,
+    name character varying,
+    email character varying,
+    mobile character varying,
+    country character varying,
+    state integer,
+    city integer,
+    street integer,
+    street_number integer,
+    address integer
+);
+
+
+ALTER TABLE public.customer_detail OWNER TO chris;
+
+--
+-- Name: customer_detail_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.customer_detail_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.customer_detail_id_seq OWNER TO chris;
+
+--
+-- Name: customer_detail_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.customer_detail_id_seq OWNED BY public.customer_detail.id;
+
+
+--
+-- Name: customer_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.customer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.customer_id_seq OWNER TO chris;
+
+--
+-- Name: customer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.customer_id_seq OWNED BY public.customer.id;
+
+
+--
+-- Name: databasechangeloglock; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.databasechangeloglock (
+    id integer NOT NULL,
+    locked boolean NOT NULL,
+    lockgranted timestamp without time zone,
+    lockedby character varying(255)
+);
+
+
+ALTER TABLE public.databasechangeloglock OWNER TO postgres;
+
+--
+-- Name: file; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.file (
+    id bigint NOT NULL,
+    name character varying NOT NULL,
+    created_date timestamp without time zone NOT NULL,
+    latest_one boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.file OWNER TO chris;
+
+--
+-- Name: file_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.file_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.file_id_seq OWNER TO chris;
+
+--
+-- Name: file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.file_id_seq OWNED BY public.file.id;
+
+
+--
+-- Name: file_sku_rules_map; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.file_sku_rules_map (
+    id bigint NOT NULL,
+    file_id integer NOT NULL,
+    sku_rules_id integer NOT NULL,
+    is_active boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.file_sku_rules_map OWNER TO chris;
+
+--
+-- Name: file_sku_rules_map_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.file_sku_rules_map_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.file_sku_rules_map_id_seq OWNER TO chris;
+
+--
+-- Name: file_sku_rules_map_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.file_sku_rules_map_id_seq OWNED BY public.file_sku_rules_map.id;
+
+
+--
+-- Name: invoice; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.invoice (
+    id bigint NOT NULL,
+    file_id integer NOT NULL,
+    invoice_code character varying NOT NULL,
+    date timestamp without time zone,
+    customer_id integer NOT NULL
+);
+
+
+ALTER TABLE public.invoice OWNER TO chris;
+
+--
+-- Name: invoice_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.invoice_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.invoice_id_seq OWNER TO chris;
+
+--
+-- Name: invoice_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.invoice_id_seq OWNED BY public.invoice.id;
+
+
+--
+-- Name: invoice_line; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.invoice_line (
+    id bigint NOT NULL,
+    invoice_id integer NOT NULL,
+    sku_id integer NOT NULL,
+    price numeric,
+    qty numeric DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public.invoice_line OWNER TO chris;
+
+--
+-- Name: invoice_line_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.invoice_line_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.invoice_line_id_seq OWNER TO chris;
+
+--
+-- Name: invoice_line_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.invoice_line_id_seq OWNED BY public.invoice_line.id;
+
+
+--
+-- Name: sku; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.sku (
+    id bigint NOT NULL,
+    file_id integer NOT NULL,
+    code character varying NOT NULL
+);
+
+
+ALTER TABLE public.sku OWNER TO chris;
+
+--
+-- Name: sku_detail; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.sku_detail (
+    id bigint NOT NULL,
+    sku_id integer NOT NULL,
+    name character varying,
+    cost numeric,
+    price numeric,
+    margin numeric,
+    stock numeric
+);
+
+
+ALTER TABLE public.sku_detail OWNER TO chris;
+
+--
+-- Name: sku_detail_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.sku_detail_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sku_detail_id_seq OWNER TO chris;
+
+--
+-- Name: sku_detail_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.sku_detail_id_seq OWNED BY public.sku_detail.id;
+
+
+--
+-- Name: sku_group; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.sku_group (
+    id bigint NOT NULL,
+    file_id integer NOT NULL,
+    code character varying NOT NULL
+);
+
+
+ALTER TABLE public.sku_group OWNER TO chris;
+
+--
+-- Name: sku_group_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.sku_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sku_group_id_seq OWNER TO chris;
+
+--
+-- Name: sku_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.sku_group_id_seq OWNED BY public.sku_group.id;
+
+
+--
+-- Name: sku_group_map; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.sku_group_map (
+    id bigint NOT NULL,
+    sku_id integer NOT NULL,
+    sku_group_id integer
+);
+
+
+ALTER TABLE public.sku_group_map OWNER TO chris;
+
+--
+-- Name: sku_group_map_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.sku_group_map_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sku_group_map_id_seq OWNER TO chris;
+
+--
+-- Name: sku_group_map_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.sku_group_map_id_seq OWNED BY public.sku_group_map.id;
+
+
+--
+-- Name: sku_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.sku_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sku_id_seq OWNER TO chris;
+
+--
+-- Name: sku_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.sku_id_seq OWNED BY public.sku.id;
+
+
+--
+-- Name: sku_rules; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.sku_rules (
+    id bigint NOT NULL,
+    antecedent_sku_id integer NOT NULL,
+    consequent_sku_id integer NOT NULL,
+    confidence numeric,
+    lift numeric,
+    abs_support numeric,
+    relative_support numeric
+);
+
+
+ALTER TABLE public.sku_rules OWNER TO chris;
+
+--
+-- Name: sku_rules_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.sku_rules_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sku_rules_id_seq OWNER TO chris;
+
+--
+-- Name: sku_rules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.sku_rules_id_seq OWNED BY public.sku_rules.id;
+
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public."user" (
+    id bigint NOT NULL,
+    user_code character varying NOT NULL,
+    password character varying,
+    created_date timestamp without time zone,
+    mobile character varying,
+    email character varying,
+    is_active boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE public."user" OWNER TO chris;
+
+--
+-- Name: user_file_map; Type: TABLE; Schema: public; Owner: chris
+--
+
+CREATE TABLE public.user_file_map (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    file_id integer NOT NULL
+);
+
+
+ALTER TABLE public.user_file_map OWNER TO chris;
+
+--
+-- Name: user_file_map_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.user_file_map_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_file_map_id_seq OWNER TO chris;
+
+--
+-- Name: user_file_map_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.user_file_map_id_seq OWNED BY public.user_file_map.id;
+
+
+--
+-- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: chris
+--
+
+CREATE SEQUENCE public.user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_id_seq OWNER TO chris;
+
+--
+-- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: chris
+--
+
+ALTER SEQUENCE public.user_id_seq OWNED BY public."user".id;
+
+
+--
+-- Name: customer id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.customer ALTER COLUMN id SET DEFAULT nextval('public.customer_id_seq'::regclass);
+
+
+--
+-- Name: customer_detail id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.customer_detail ALTER COLUMN id SET DEFAULT nextval('public.customer_detail_id_seq'::regclass);
+
+
+--
+-- Name: file id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.file ALTER COLUMN id SET DEFAULT nextval('public.file_id_seq'::regclass);
+
+
+--
+-- Name: file_sku_rules_map id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.file_sku_rules_map ALTER COLUMN id SET DEFAULT nextval('public.file_sku_rules_map_id_seq'::regclass);
+
+
+--
+-- Name: invoice id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice ALTER COLUMN id SET DEFAULT nextval('public.invoice_id_seq'::regclass);
+
+
+--
+-- Name: invoice_line id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice_line ALTER COLUMN id SET DEFAULT nextval('public.invoice_line_id_seq'::regclass);
+
+
+--
+-- Name: sku id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku ALTER COLUMN id SET DEFAULT nextval('public.sku_id_seq'::regclass);
+
+
+--
+-- Name: sku_detail id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_detail ALTER COLUMN id SET DEFAULT nextval('public.sku_detail_id_seq'::regclass);
+
+
+--
+-- Name: sku_group id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_group ALTER COLUMN id SET DEFAULT nextval('public.sku_group_id_seq'::regclass);
+
+
+--
+-- Name: sku_group_map id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_group_map ALTER COLUMN id SET DEFAULT nextval('public.sku_group_map_id_seq'::regclass);
+
+
+--
+-- Name: sku_rules id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_rules ALTER COLUMN id SET DEFAULT nextval('public.sku_rules_id_seq'::regclass);
+
+
+--
+-- Name: user id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public."user" ALTER COLUMN id SET DEFAULT nextval('public.user_id_seq'::regclass);
+
+
+--
+-- Name: user_file_map id; Type: DEFAULT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.user_file_map ALTER COLUMN id SET DEFAULT nextval('public.user_file_map_id_seq'::regclass);
+
+
+--
+-- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: customer_detail; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: databasechangeloglock; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.databasechangeloglock VALUES (1, false, NULL, NULL);
+
+
+--
+-- Data for Name: file; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: file_sku_rules_map; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: invoice; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: invoice_line; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: sku; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: sku_detail; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: sku_group; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: sku_group_map; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: sku_rules; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+INSERT INTO public."user" VALUES (1, 'test123', NULL, NULL, NULL, NULL, true);
+
+
+--
+-- Data for Name: user_file_map; Type: TABLE DATA; Schema: public; Owner: chris
+--
+
+
+
+--
+-- Name: customer_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.customer_detail_id_seq', 1, false);
+
+
+--
+-- Name: customer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.customer_id_seq', 1, false);
+
+
+--
+-- Name: file_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.file_id_seq', 1, false);
+
+
+--
+-- Name: file_sku_rules_map_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.file_sku_rules_map_id_seq', 1, false);
+
+
+--
+-- Name: invoice_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.invoice_id_seq', 1, false);
+
+
+--
+-- Name: invoice_line_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.invoice_line_id_seq', 1, false);
+
+
+--
+-- Name: sku_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.sku_detail_id_seq', 1, false);
+
+
+--
+-- Name: sku_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.sku_group_id_seq', 1, false);
+
+
+--
+-- Name: sku_group_map_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.sku_group_map_id_seq', 1, false);
+
+
+--
+-- Name: sku_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.sku_id_seq', 1, false);
+
+
+--
+-- Name: sku_rules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.sku_rules_id_seq', 1, false);
+
+
+--
+-- Name: user_file_map_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.user_file_map_id_seq', 1, false);
+
+
+--
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chris
+--
+
+SELECT pg_catalog.setval('public.user_id_seq', 1, true);
+
+
+--
+-- Name: customer_detail customer_detail_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.customer_detail
+    ADD CONSTRAINT customer_detail_pk PRIMARY KEY (id);
+
+
+--
+-- Name: customer customer_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.customer
+    ADD CONSTRAINT customer_pk PRIMARY KEY (id);
+
+
+--
+-- Name: databasechangeloglock databasechangeloglock_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.databasechangeloglock
+    ADD CONSTRAINT databasechangeloglock_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: file file_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.file
+    ADD CONSTRAINT file_pk PRIMARY KEY (id);
+
+
+--
+-- Name: file_sku_rules_map file_sku_rules_map_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.file_sku_rules_map
+    ADD CONSTRAINT file_sku_rules_map_pk PRIMARY KEY (id);
+
+
+--
+-- Name: invoice_line invoice_line_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice_line
+    ADD CONSTRAINT invoice_line_pk PRIMARY KEY (id);
+
+
+--
+-- Name: invoice invoice_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice
+    ADD CONSTRAINT invoice_pk PRIMARY KEY (id);
+
+
+--
+-- Name: sku_detail sku_detail_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_detail
+    ADD CONSTRAINT sku_detail_pk PRIMARY KEY (id);
+
+
+--
+-- Name: sku_group_map sku_group_map_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_group_map
+    ADD CONSTRAINT sku_group_map_pk PRIMARY KEY (id);
+
+
+--
+-- Name: sku_group sku_group_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_group
+    ADD CONSTRAINT sku_group_pk PRIMARY KEY (id);
+
+
+--
+-- Name: sku sku_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku
+    ADD CONSTRAINT sku_pk PRIMARY KEY (id);
+
+
+--
+-- Name: sku_rules sku_rules_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_rules
+    ADD CONSTRAINT sku_rules_pk PRIMARY KEY (id);
+
+
+--
+-- Name: user_file_map user_file_map_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.user_file_map
+    ADD CONSTRAINT user_file_map_pk PRIMARY KEY (id);
+
+
+--
+-- Name: user user_pk; Type: CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public."user"
+    ADD CONSTRAINT user_pk PRIMARY KEY (id);
+
+
+--
+-- Name: customer_detail_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX customer_detail_id_uindex ON public.customer_detail USING btree (id);
+
+
+--
+-- Name: customer_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX customer_id_uindex ON public.customer USING btree (id);
+
+
+--
+-- Name: file_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX file_id_uindex ON public.file USING btree (id);
+
+
+--
+-- Name: file_sku_rules_map_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX file_sku_rules_map_id_uindex ON public.file_sku_rules_map USING btree (id);
+
+
+--
+-- Name: invoice_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX invoice_id_uindex ON public.invoice USING btree (id);
+
+
+--
+-- Name: invoice_line_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX invoice_line_id_uindex ON public.invoice_line USING btree (id);
+
+
+--
+-- Name: sku_detail_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX sku_detail_id_uindex ON public.sku_detail USING btree (id);
+
+
+--
+-- Name: sku_group_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX sku_group_id_uindex ON public.sku_group USING btree (id);
+
+
+--
+-- Name: sku_group_map_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX sku_group_map_id_uindex ON public.sku_group_map USING btree (id);
+
+
+--
+-- Name: sku_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX sku_id_uindex ON public.sku USING btree (id);
+
+
+--
+-- Name: sku_rules_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX sku_rules_id_uindex ON public.sku_rules USING btree (id);
+
+
+--
+-- Name: user_file_map_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX user_file_map_id_uindex ON public.user_file_map USING btree (id);
+
+
+--
+-- Name: user_id_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX user_id_uindex ON public."user" USING btree (id);
+
+
+--
+-- Name: user_user_code_uindex; Type: INDEX; Schema: public; Owner: chris
+--
+
+CREATE UNIQUE INDEX user_user_code_uindex ON public."user" USING btree (user_code);
+
+
+--
+-- Name: customer_detail customer_detail_customer_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.customer_detail
+    ADD CONSTRAINT customer_detail_customer_id_fk FOREIGN KEY (customer_id) REFERENCES public.customer(id);
+
+
+--
+-- Name: customer customer_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.customer
+    ADD CONSTRAINT customer_file_id_fk FOREIGN KEY (file_id) REFERENCES public.file(id);
+
+
+--
+-- Name: file_sku_rules_map file_sku_rules_map_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.file_sku_rules_map
+    ADD CONSTRAINT file_sku_rules_map_file_id_fk FOREIGN KEY (file_id) REFERENCES public.file(id);
+
+
+--
+-- Name: file_sku_rules_map file_sku_rules_map_sku_rules_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.file_sku_rules_map
+    ADD CONSTRAINT file_sku_rules_map_sku_rules_id_fk FOREIGN KEY (sku_rules_id) REFERENCES public.sku_rules(id);
+
+
+--
+-- Name: invoice invoice_customer_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice
+    ADD CONSTRAINT invoice_customer_id_fk FOREIGN KEY (customer_id) REFERENCES public.customer(id);
+
+
+--
+-- Name: invoice invoice_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice
+    ADD CONSTRAINT invoice_file_id_fk FOREIGN KEY (file_id) REFERENCES public.file(id);
+
+
+--
+-- Name: invoice_line invoice_line_invoice_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice_line
+    ADD CONSTRAINT invoice_line_invoice_id_fk FOREIGN KEY (invoice_id) REFERENCES public.invoice(id);
+
+
+--
+-- Name: invoice_line invoice_line_sku_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.invoice_line
+    ADD CONSTRAINT invoice_line_sku_id_fk FOREIGN KEY (sku_id) REFERENCES public.sku(id);
+
+
+--
+-- Name: sku_detail sku_detail_sku_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_detail
+    ADD CONSTRAINT sku_detail_sku_id_fk FOREIGN KEY (sku_id) REFERENCES public.sku(id);
+
+
+--
+-- Name: sku sku_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku
+    ADD CONSTRAINT sku_file_id_fk FOREIGN KEY (file_id) REFERENCES public.file(id);
+
+
+--
+-- Name: sku_group sku_group_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_group
+    ADD CONSTRAINT sku_group_file_id_fk FOREIGN KEY (file_id) REFERENCES public.file(id);
+
+
+--
+-- Name: sku_group_map sku_group_map_sku_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_group_map
+    ADD CONSTRAINT sku_group_map_sku_group_id_fk FOREIGN KEY (sku_group_id) REFERENCES public.sku_group(id);
+
+
+--
+-- Name: sku_group_map sku_group_map_sku_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_group_map
+    ADD CONSTRAINT sku_group_map_sku_id_fk FOREIGN KEY (sku_id) REFERENCES public.sku(id);
+
+
+--
+-- Name: sku_rules sku_rules_sku_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_rules
+    ADD CONSTRAINT sku_rules_sku_id_fk FOREIGN KEY (antecedent_sku_id) REFERENCES public.sku(id);
+
+
+--
+-- Name: sku_rules sku_rules_sku_id_fk_2; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.sku_rules
+    ADD CONSTRAINT sku_rules_sku_id_fk_2 FOREIGN KEY (consequent_sku_id) REFERENCES public.sku(id);
+
+
+--
+-- Name: user_file_map user_file_map_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.user_file_map
+    ADD CONSTRAINT user_file_map_file_id_fk FOREIGN KEY (file_id) REFERENCES public.file(id);
+
+
+--
+-- Name: user_file_map user_file_map_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: chris
+--
+
+ALTER TABLE ONLY public.user_file_map
+    ADD CONSTRAINT user_file_map_user_id_fk FOREIGN KEY (user_id) REFERENCES public."user"(id);
 
 
 --
