@@ -2,7 +2,6 @@ package com.blackbean.api.controller;
 
 import com.blackbean.api.Services.CustomerNextBestConversationPreComputationService;
 import com.blackbean.api.Services.EntityCreationService;
-import com.blackbean.api.Services.EntityCreationServiceImpl;
 import com.blackbean.api.entity.FileEntity;
 import com.blackbean.api.entity.UserEntity;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,7 @@ public class MainController {
 
     UserEntity userEntity;
     FileEntity fileEntity;
-    EntityCreationService entityCreationService = new EntityCreationServiceImpl();
+    EntityCreationService entityCreationService;
 
     @RequestMapping("/test")
     @ResponseBody

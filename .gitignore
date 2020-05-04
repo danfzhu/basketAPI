@@ -1,82 +1,32 @@
-# OS
-.DS_Store
-Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
 
-# git merge files
-*.orig
-
-# IntelliJ
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+### IntelliJ IDEA ###
 .idea
+*.iws
 *.iml
+*.ipr
 
-#logs
-*.log
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
 
-# build
-.dist*
-dsa-recommendation-engine/dsa-server/target/*
-dsa-recommendation-engine/dsa-ui/node_modules
-order-management-system/oms-server/target/*
-larry-data-services/target/*
-
-order-management-system/oms-ui/node_modules
-
-# need to leave the wsdls intact
-dsa-recommendation-engine/dsa-server/src/main/resources/static/*
-!dsa-recommendation-engine/dsa-server/src/main/resources/static/secure/
-!dsa-recommendation-engine/dsa-server/src/main/resources/static/secure/*
-
-*.class
-
-/robotTest/log.html
-/robotTest/output.xml
-/robotTest/report.html
-/robotTest/selenium-*.png
-**sonar-report.json
-
-connectors/pfd-dsa-agent/target/
-
-/order-management-system/oms-server/pom.xml.releaseBackup
-/pom.xml.releaseBackup
-/release.properties
-/larry-data-services/pom.xml.releaseBackup
-/dsa-recommendation-engine/dsa-server/pom.xml.releaseBackup
-/order-management-system/dist/
-**/persistence.xml
-
-**/target/**
-order-management-system/Tests/**/*.pyc
-order-management-system/Tests/**/log.html
-selenium-screenshot*.png
-out/
-log\.html
-
-output\.xml
-
-report\.html
-dsa-recommendation-engine/dsa-ui/package-lock\.json
-**/.settings/*
-**/.vscode/*
-**/.classpath
-**/.factorypath
-**/.project
-**/pom.xml.releaseBackup
-**/.expo/*
-**/node_modules
-
-# expo
-.expo/
-
-# misc
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-**/node_modules/**
+### VS Code ###
+.vscode/
+target/*
+logger.txt
